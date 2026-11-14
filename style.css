@@ -397,3 +397,141 @@ footer li a:hover { color: var(--ink); }
     height: 30px;
   }
 }
+
+/* ============================================================
+   MANGOTALES FEATURE
+   ============================================================ */
+.mango {
+  position: relative;
+  padding: 96px 0 100px;
+  background:
+    radial-gradient(ellipse 70% 60% at 82% 0%, rgba(255,195,36,.10), transparent 60%),
+    radial-gradient(ellipse 55% 50% at 8% 100%, rgba(255,140,40,.09), transparent 55%),
+    linear-gradient(165deg, #1c1407 0%, #281c0a 55%, #1a1206 100%);
+  overflow: hidden;
+}
+.mango .wrap { position: relative; z-index: 2; }
+
+.mango-head { text-align: center; max-width: 680px; margin: 0 auto 52px; }
+.mango-eyebrow {
+  display: inline-block;
+  font: 600 12px var(--sans); letter-spacing: .28em; text-transform: uppercase;
+  color: #ffc324;
+}
+.mango-title {
+  font: 700 clamp(34px, 5.2vw, 64px)/1.12 var(--serif);
+  letter-spacing: -.005em; color: #ffc324;
+  margin: 16px 0 18px;
+}
+.mango-rule { width: 46px; height: 3px; background: #ffc324; margin: 0 auto 22px; opacity: .85; }
+.mango-desc {
+  font: 400 16.5px/1.75 var(--sans); color: rgba(255,255,255,.74);
+  max-width: 62ch; margin: 0 auto;
+}
+
+/* Kinetic typography — staggered, minimal reveal */
+.mango-title span {
+  display: inline-block;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity .75s cubic-bezier(.2,.7,.2,1), transform .75s cubic-bezier(.2,.7,.2,1);
+  transition-delay: calc(var(--i) * .11s);
+}
+.mango.is-in .mango-title span { opacity: 1; transform: translateY(0); }
+
+.mango-name { color: #ffc324; }
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .mango-name {
+    background: linear-gradient(100deg, #ffc324 0%, #ffe9a8 46%, #ffae2e 56%, #ffc324 76%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    animation: mango-shimmer 6s ease-in-out infinite;
+  }
+}
+@keyframes mango-shimmer {
+  0%, 100% { background-position: 0% 0; }
+  50%      { background-position: 100% 0; }
+}
+
+/* Body layout */
+.mango-body { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: stretch; }
+
+.mango-card {
+  position: relative;
+  display: flex; flex-direction: column;
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(255,195,36,.18);
+  border-radius: 20px;
+  padding: 34px;
+  opacity: 0; transform: translateY(22px);
+  transition: opacity .7s ease, transform .7s ease;
+  backdrop-filter: blur(2px);
+}
+.mango.is-in .mango-card { opacity: 1; transform: translateY(0); }
+.mango.is-in .mango-card:nth-child(2) { transition-delay: .18s; }
+
+/* Info card */
+.mango-info-top { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
+.mango-badge {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: #ffc324; color: #1c1407;
+  display: grid; place-items: center;
+  font: 800 18px var(--serif);
+  box-shadow: 0 6px 18px rgba(255,195,36,.25);
+  flex-shrink: 0;
+}
+.mango-id h3 { font: 700 22px/1.15 var(--serif); color: #fff; }
+.mango-role { font: 500 12px var(--sans); letter-spacing: .14em; text-transform: uppercase; color: #ffc324; }
+
+.mango-hash { font: 600 15px var(--sans); color: rgba(255,255,255,.86); margin-bottom: 22px; }
+.mango-svc-label { font: 500 11px var(--sans); letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 10px; }
+.mango-svc { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+.mango-svc li {
+  font: 500 12.5px var(--sans); letter-spacing: .03em;
+  padding: 7px 14px; border-radius: 999px;
+  background: rgba(255,195,36,.10); border: 1px solid rgba(255,195,36,.28);
+  color: #ffd766;
+}
+
+.mango-phones { display: flex; flex-direction: column; gap: 12px; margin-bottom: 22px; }
+.mango-phone { display: inline-flex; align-items: center; gap: 9px; font: 500 15px var(--sans); color: rgba(255,255,255,.88); width: fit-content; transition: color .2s; }
+.mango-phone .ico { width: 16px; height: 16px; stroke: #ffc324; }
+.mango-phone:hover { color: #ffc324; }
+
+.mango-info-foot { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.10); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.mango-site { font: 600 15px var(--sans); color: #ffc324; }
+.mango-site:hover { text-decoration: underline; }
+.mango-locs { font: 500 13px var(--sans); color: rgba(255,255,255,.62); }
+
+/* Location card */
+.mango-loc { padding: 0; overflow: hidden; }
+.mango-map { height: 220px; background: linear-gradient(135deg,#241808,#2e210b); }
+.mango-map iframe { width: 100%; height: 100%; border: 0; display: block; }
+.mango-loc-body { padding: 26px 30px 30px; display: flex; flex-direction: column; flex: 1; }
+.mango-loc-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 22px; }
+.mango-loc-pin { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,195,36,.12); border: 1px solid rgba(255,195,36,.30); display: grid; place-items: center; flex-shrink: 0; }
+.mango-loc-pin .ico { width: 18px; height: 18px; stroke: #ffc324; }
+.mango-loc-head h4 { font: 700 18px/1.2 var(--serif); color: #fff; margin-bottom: 4px; }
+.mango-loc-head p { font: 400 14px var(--sans); color: rgba(255,255,255,.68); }
+.mango-loc-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.10); }
+.mango-loc-regions { font: 500 12.5px var(--sans); color: rgba(255,255,255,.6); }
+.mango-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; background: #ffc324; color: #1c1407; font: 600 12px var(--sans); letter-spacing: .07em; text-transform: uppercase; border-radius: 999px; transition: background .2s, transform .2s, box-shadow .2s; }
+.mango-btn .ico { width: 14px; height: 14px; stroke: #1c1407; }
+.mango-btn:hover { background: #ffd45e; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(255,195,36,.30); }
+
+/* Responsive */
+@media (max-width: 820px) {
+  .mango-body { grid-template-columns: 1fr; }
+  .mango-map { height: 200px; }
+}
+@media (max-width: 600px) {
+  .mango { padding: 72px 0 76px; }
+  .mango-card { padding: 26px; }
+  .mango-loc-body { padding: 22px 22px 24px; }
+  .mango-map { height: 180px; }
+  .mango-info-foot { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mango-title span, .mango-card { opacity: 1; transform: none; transition: none; }
+  .mango-name { animation: none; }
+}
