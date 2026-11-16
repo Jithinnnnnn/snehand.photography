@@ -14,7 +14,7 @@ const same = (a, b) => {
 const FOLDER = "public";
 const reply = (code, obj) => ({
   statusCode: code,
-  headers: { "Content-Type": "application/json" },
+  headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
   body: JSON.stringify(obj),
 });
 
@@ -38,6 +38,7 @@ exports.handler = async (event) => {
   const api = (path, opt = {}) =>
     fetch(`https://api.github.com/repos/${GH_REPO}/contents/${path}`, {
       ...opt,
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${GH_TOKEN}`,
         Accept: "application/vnd.github+json",
@@ -63,7 +64,7 @@ exports.handler = async (event) => {
     if (b.action === "login") return reply(200, { ok: true });
 
     if (b.action === "list") {
-      const r = await api(`${FOLDER}?ref=${branch}`);
+      const r = await api(`${FOLDER}?ref=${branch}&t=${Date.now()}`);
       if (!r.ok) return reply(500, { error: "Could not read folder: " + (await ghErr(r)) });
       const all = await r.json();
       if (!Array.isArray(all)) return reply(500, { error: "'public' on GitHub is not a folder" });
@@ -86,8 +87,9 @@ exports.handler = async (event) => {
       const name = clean(b.name);
       if (!name || !/\.jpe?g$/i.test(name)) return reply(400, { error: "JPG images only" });
       const path = `${FOLDER}/${enc(name)}`;
-      const ex = await api(`${path}?ref=${branch}`);          // exists? then overwrite
-      const sha1 = ex.ok ? (await ex.json()).sha : undefined;
+      const ex = await api(`${path}?ref=${branch}`);          // must already exist (replace only)
+      if (!ex.ok) return reply(400, { error: "Replace only: " + name + " does not exist in /public" });
+      const sha1 = (await ex.json()).sha;
       const r = await api(path, {
         method: "PUT",
         body: JSON.stringify({ message: `Admin: upload ${name}`, content: b.content, branch, sha: sha1 }),
