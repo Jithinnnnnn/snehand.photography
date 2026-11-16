@@ -51,7 +51,13 @@ exports.handler = async (event) => {
     catch { return String(r.status); }
   };
 
-  const clean = (n) => String(n || "").replace(/[^a-zA-Z0-9._-]/g, "_");
+  // Use the file name exactly as it is on GitHub; only block anything that could escape the folder.
+  const clean = (n) => {
+    n = String(n || "");
+    if (!n || /[\/\\]/.test(n) || n.startsWith(".") || n.includes("..")) return null;
+    return n;
+  };
+  const enc = encodeURIComponent;
 
   try {
     if (b.action === "login") return reply(200, { ok: true });
@@ -78,8 +84,8 @@ exports.handler = async (event) => {
 
     if (b.action === "upload") {
       const name = clean(b.name);
-      if (!/\.jpe?g$/i.test(name)) return reply(400, { error: "JPG images only" });
-      const path = `${FOLDER}/${name}`;
+      if (!name || !/\.jpe?g$/i.test(name)) return reply(400, { error: "JPG images only" });
+      const path = `${FOLDER}/${enc(name)}`;
       const ex = await api(`${path}?ref=${branch}`);          // exists? then overwrite
       const sha1 = ex.ok ? (await ex.json()).sha : undefined;
       const r = await api(path, {
@@ -91,7 +97,8 @@ exports.handler = async (event) => {
 
     if (b.action === "delete") {
       const name = clean(b.name);
-      const path = `${FOLDER}/${name}`;
+      if (!name) return reply(400, { error: "Bad file name" });
+      const path = `${FOLDER}/${enc(name)}`;
       // always use the file's CURRENT id from GitHub, not the one the page loaded earlier
       const ex = await api(`${path}?ref=${branch}`);
       if (ex.status === 404) return reply(200, { ok: true, note: "already deleted" });
