@@ -59,7 +59,9 @@ exports.handler = async (event) => {
     if (b.action === "list") {
       const r = await api(`${FOLDER}?ref=${branch}`);
       if (!r.ok) return reply(500, { error: "Could not read folder: " + (await ghErr(r)) });
-      const files = (await r.json())
+      const all = await r.json();
+      if (!Array.isArray(all)) return reply(500, { error: "'public' on GitHub is not a folder" });
+      const files = all
         .filter((f) => f.type === "file" && /\.jpe?g$/i.test(f.name))
         .map((f) => {
           const d = f.download_url || "";
@@ -71,7 +73,7 @@ exports.handler = async (event) => {
             local: `/${FOLDER}/${f.name}`,
           };
         });
-      return reply(200, { files });
+      return reply(200, { files, seen: all.map((f) => f.name), repo: GH_REPO, branch });
     }
 
     if (b.action === "upload") {
@@ -89,9 +91,15 @@ exports.handler = async (event) => {
 
     if (b.action === "delete") {
       const name = clean(b.name);
-      const r = await api(`${FOLDER}/${name}`, {
+      const path = `${FOLDER}/${name}`;
+      // always use the file's CURRENT id from GitHub, not the one the page loaded earlier
+      const ex = await api(`${path}?ref=${branch}`);
+      if (ex.status === 404) return reply(200, { ok: true, note: "already deleted" });
+      if (!ex.ok) return reply(500, { error: "Delete failed (lookup): " + (await ghErr(ex)) });
+      const cur = (await ex.json()).sha;
+      const r = await api(path, {
         method: "DELETE",
-        body: JSON.stringify({ message: `Admin: delete ${name}`, sha: b.sha, branch }),
+        body: JSON.stringify({ message: `Admin: delete ${name}`, sha: cur, branch }),
       });
       return r.ok ? reply(200, { ok: true }) : reply(500, { error: "Delete failed: " + (await ghErr(r)) });
     }

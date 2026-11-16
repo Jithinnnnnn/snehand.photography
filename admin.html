@@ -111,6 +111,13 @@
     return call({ action: "list" }).then(function (j) {
       if (j._status === 401) return signOut();
       if (!j._ok) return say(j.error, true);
+      if (!j.files.length) {
+        say("No .jpg files found in /public on GitHub (repo " + j.repo + ", branch " + j.branch + "). Files seen there: " +
+            (j.seen && j.seen.length ? j.seen.join(", ") : "none, the folder is empty or missing") +
+            ". Push your images to GitHub, then press Refresh.", true);
+        $("grid").innerHTML = "";
+        return;
+      }
       say(j.files.length + " image(s) in /public");
       var g = $("grid"); g.innerHTML = "";
       j.files.forEach(function (f) { g.appendChild(card(f)); });
@@ -142,8 +149,12 @@
     lock(true); say("Deleting…");
     call({ action: "delete", name: f.name, sha: f.sha }).then(function (r) {
       lock(false);
-      if (r._ok) { delete fresh[f.name]; say("Deleted. Site updates in about a minute."); load(); }
-      else say(r.error, true);
+      if (r._ok) {
+        delete fresh[f.name];
+        load().then(function () { say("Deleted " + f.name + ". Live site updates in about a minute."); });
+      } else {
+        load().then(function () { say(r.error || "Delete failed", true); });
+      }
     });
   }
 
