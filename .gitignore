@@ -1,0 +1,11 @@
+# Secrets - never commit
+.env
+.env.*
+
+# Dependencies and local Netlify data
+node_modules/
+.netlify/
+
+# OS files
+Thumbs.db
+.DS_Store

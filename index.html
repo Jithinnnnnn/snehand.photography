@@ -151,50 +151,211 @@
         <div class="sec-rule"></div>
       </div>
       <a href="https://www.instagram.com/snehand.photography/" class="view-all">
-        View All Portfolio
-        <span class="view-btn"><svg class="ico"><use href="#i-arrow"/></svg></span>
-      </a>
-    </div>
-    <div class="cats">
-      <a href="#contact" class="cat ph p1">
-        <div class="cat-label"><h3>Weddings</h3><span>View Gallery →</span></div>
-      </a>
-      <a href="#contact" class="cat ph p2">
-        <div class="cat-label"><h3>Fashion</h3><span>View Gallery →</span></div>
-      </a>
-      <a href="#contact" class="cat ph p3">
-        <div class="cat-label"><h3>Landscape</h3><span>View Gallery →</span></div>
-      </a>
-      <a href="#contact" class="cat ph p4">
-        <div class="cat-label"><h3>Baby</h3><span>View Gallery →</span></div>
-      </a>
-      <a href="#contact" class="cat ph p5">
-        <div class="cat-label"><h3>Family</h3><span>View Gallery →</span></div>
-      </a>
-      <a href="#contact" class="cat ph p6">
-        <div class="cat-label"><h3>Maternity</h3><span>View Gallery →</span></div>
-      </a>
+            </a>
     </div>
   </div>
+  <div class="cats arc" id="arcCats" aria-roledescription="carousel" aria-label="Explore my work">
+    <div class="arc-stage">
+      <div class="arc-viewport">
+        <div class="arc-track">
+          <a href="#contact" class="cat" aria-label="Weddings gallery">
+            <div class="cat-img" style="background-image:url('public/wed1.jpg')"></div>
+            <span class="cat-grad"></span>
+            <div class="cat-label"><h3>Weddings</h3><span>View Gallery →</span></div>
+          </a>
+          <a href="#contact" class="cat" aria-label="Fashion gallery">
+            <div class="cat-img" style="background-image:url('public/fash2.jpg')"></div>
+            <span class="cat-grad"></span>
+            <div class="cat-label"><h3>Fashion</h3><span>View Gallery →</span></div>
+          </a>
+          <a href="#contact" class="cat" aria-label="Baby gallery">
+            <div class="cat-img" style="background-image:url('public/baby3.jpg')"></div>
+            <span class="cat-grad"></span>
+            <div class="cat-label"><h3>Baby</h3><span>View Gallery →</span></div>
+          </a>
+          <a href="#contact" class="cat" aria-label="Family gallery">
+            <div class="cat-img" style="background-image:url('public/fam4.jpg')"></div>
+            <span class="cat-grad"></span>
+            <div class="cat-label"><h3>Family</h3><span>View Gallery →</span></div>
+          </a>
+          <a href="#contact" class="cat" aria-label="Maternity gallery">
+            <div class="cat-img" style="background-image:url('public/matern4jpg.jpg')"></div>
+            <span class="cat-grad"></span>
+            <div class="cat-label"><h3>Maternity</h3><span>View Gallery →</span></div>
+          </a>
+        </div>
+      </div>
+      <button class="arc-btn prev" type="button" aria-label="Previous category"><svg class="ico"><use href="#i-arrow"/></svg></button>
+      <button class="arc-btn next" type="button" aria-label="Next category"><svg class="ico"><use href="#i-arrow"/></svg></button>
+    </div>
+    <div class="arc-dots" role="tablist" aria-label="Choose category"></div>
+  </div>
 </section>
+<script>
+(function () {
+  var root = document.getElementById('arcCats');
+  if (!root) return;
+  var cards = Array.prototype.slice.call(root.querySelectorAll('.cat'));
+  var dotsWrap = root.querySelector('.arc-dots');
+  var prevBtn = root.querySelector('.arc-btn.prev');
+  var nextBtn = root.querySelector('.arc-btn.next');
+  var viewport = root.querySelector('.arc-viewport');
+  var count = cards.length;
+  if (!count || !viewport) return;
+
+  var active = Math.floor(count / 2);
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var autoTimer = null;
+
+  cards.forEach(function (c, i) {
+    c.draggable = false;
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'arc-dot';
+    b.setAttribute('role', 'tab');
+    var h3 = c.querySelector('h3');
+    b.setAttribute('aria-label', h3 ? h3.textContent : ('Slide ' + (i + 1)));
+    b.addEventListener('click', function () { setActive(i); });
+    dotsWrap.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  function clampI(i) { return Math.max(0, Math.min(count - 1, i)); }
+
+  function geometry() {
+    var w = window.innerWidth || document.documentElement.clientWidth || 360;
+    var cw = cards[0].offsetWidth || 280;
+    var mobile = w < 640;
+    return {
+      spacingX: cw * (mobile ? 0.62 : 0.84),
+      depth: cw * (mobile ? 0.5 : 0.62),
+      angle: mobile ? 40 : 32,
+      maxVisible: 2
+    };
+  }
+
+  function render() {
+    var g = geometry();
+    cards.forEach(function (c, i) {
+      var d = i - active;
+      var ad = Math.abs(d);
+      if (ad > g.maxVisible) {
+        c.style.opacity = '0';
+        c.style.pointerEvents = 'none';
+        c.style.transform = 'translate(-50%,-50%) translateZ(-1000px)';
+        c.style.zIndex = '0';
+        c.style.filter = 'none';
+        c.classList.remove('is-active');
+        c.setAttribute('tabindex', '-1');
+        c.setAttribute('aria-hidden', 'true');
+        return;
+      }
+      var adf = ad <= 1 ? ad : 1 + (ad - 1) * 0.45;
+      var x = g.spacingX * (d < 0 ? -1 : 1) * adf;
+      var z = -g.depth * (ad === 0 ? 0 : ad === 1 ? 0.5 : 1.1);
+      var ry = -d * g.angle;
+      var scale = 1 - 0.07 * ad;
+      var op = ad === 0 ? 1 : ad === 1 ? 0.92 : 0.5;
+      c.style.opacity = String(op);
+      c.style.pointerEvents = 'auto';
+      c.style.zIndex = String(100 - ad * 10);
+      c.style.filter = ad > 1 ? 'blur(1.2px) brightness(.82)' : 'none';
+      c.style.transform =
+        'translate(-50%,-50%) translateX(' + x + 'px) translateZ(' + z + 'px) rotateY(' + ry + 'deg) scale(' + scale + ')';
+      var isActive = (d === 0);
+      c.classList.toggle('is-active', isActive);
+      c.setAttribute('tabindex', isActive ? '0' : '-1');
+      c.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+    });
+    dots.forEach(function (d, i) { d.setAttribute('aria-selected', i === active ? 'true' : 'false'); });
+    if (prevBtn) prevBtn.disabled = active <= 0;
+    if (nextBtn) nextBtn.disabled = active >= count - 1;
+  }
+
+  function setActive(i, fromAuto) {
+    active = clampI(i);
+    render();
+    if (!fromAuto) scheduleAuto();
+  }
+
+  if (prevBtn) prevBtn.addEventListener('click', function () { setActive(active - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function () { setActive(active + 1); });
+
+  root.setAttribute('tabindex', '0');
+  root.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); setActive(active - 1); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); setActive(active + 1); }
+    else if (e.key === 'Home') { e.preventDefault(); setActive(0); }
+    else if (e.key === 'End') { e.preventDefault(); setActive(count - 1); }
+  });
+
+  var sx = 0, dragging = false, moved = false, suppressClick = false;
+  function down(e) {
+    dragging = true; moved = false; suppressClick = false;
+    sx = e.clientX;
+    stopAuto();
+  }
+  function move(e) {
+    if (!dragging) return;
+    if (Math.abs(e.clientX - sx) > 10) moved = true;
+  }
+  function up(e) {
+    if (!dragging) return;
+    dragging = false;
+    if (!moved) { scheduleAuto(); return; }
+    suppressClick = true;
+    var dx = e.clientX - sx;
+    var g = geometry();
+    if (Math.abs(dx) > 28) {
+      var steps = Math.max(1, Math.min(2, Math.round(Math.abs(dx) / g.spacingX)));
+      setActive(active + (dx < 0 ? steps : -steps));
+    } else {
+      scheduleAuto();
+    }
+  }
+  viewport.addEventListener('pointerdown', down);
+  viewport.addEventListener('pointermove', move);
+  viewport.addEventListener('pointerup', up);
+  viewport.addEventListener('pointercancel', function () { dragging = false; scheduleAuto(); });
+
+  cards.forEach(function (c, i) {
+    c.addEventListener('click', function (e) {
+      if (suppressClick) { e.preventDefault(); suppressClick = false; return; }
+      if (i !== active) { e.preventDefault(); setActive(i); }
+    });
+  });
+
+  function autoNext() { setActive(active >= count - 1 ? 0 : active + 1, true); }
+  function scheduleAuto() {
+    if (reduce) return;
+    if (autoTimer) clearInterval(autoTimer);
+    autoTimer = setInterval(autoNext, 6500);
+  }
+  function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
+  root.addEventListener('pointerenter', stopAuto);
+  root.addEventListener('pointerleave', scheduleAuto);
+  document.addEventListener('visibilitychange', function () { if (document.hidden) stopAuto(); else scheduleAuto(); });
+
+  var rT;
+  window.addEventListener('resize', function () { clearTimeout(rT); rT = setTimeout(render, 120); });
+
+  render();
+  scheduleAuto();
+})();
+</script>
 
 <!-- ========== ABOUT ========== -->
 <section id="about" class="about">
   <div class="wrap">
     <div class="about-collage">
-      <div class="col-main ph p2"></div>
-      <div class="col-side">
-        <div class="col-sm ph p5"></div>
-        <div class="col-sm ph p6"></div>
-      </div>
+      <div class="col-main ph p2"> <img src="public\ceoImg.jpg" alt="Side shot 2"></div>
       <div class="col-circ">
         <svg viewBox="0 0 128 128" aria-hidden="true">
           <defs><path id="tc" d="M64 64m-48 0a48 48 0 1 1 96 0a48 48 0 1 1-96 0"/></defs>
-          <text><textPath href="#tc">PHOTOGRAPHY • VIDEOGRAPHY • </textPath></text>
+          <text><textPath href="#tc"  startOffset="20%">PHOTOGRAPHY • VIDEOGRAPHY • </textPath></text>
         </svg>
         <svg class="ico col-cam"><use href="#i-cam"/></svg>
       </div>
-      <div class="sig col-sig" aria-hidden="true">Snehand</div>
     </div>
 
     <div class="about-copy">
@@ -248,6 +409,24 @@ When I'm not working, I'm usually chasing the monsoon clouds or drinking too muc
     </div>
 
     <div class="testi-track" id="testiTrack" tabindex="0" aria-label="Testimonials — scroll or swipe">
+      
+
+      <article class="testi">
+        <p class="testi-text">Choosing Snehand Photography was one of the best decisions we made for our special moments. Every photograph tells a story and beautifully captures the emotions of the day. The candid pictures were our absolute favourite—they felt natural and genuine. Thank you for turning our precious moments into memories we can cherish forever.</p>
+        <div class="testi-foot">
+          <div class="testi-av" aria-hidden="true">SS</div>
+          <div class="testi-id"><strong>Silga Shy</strong><span>Candid Photography</span></div>
+        </div>
+      </article>
+
+      <article class="testi">
+        <p class="testi-text">Had a really great experience working with Snehand! He is a very good photographer, not just because of his skills but also because of the way he interacts with people. He's super friendly, easy to work with, and really good at handling clients. His photos are absolutely beautiful, and the final outputs are equally impressive. A genuinely talented person!</p>
+        <div class="testi-foot">
+          <div class="testi-av" aria-hidden="true">MM</div>
+          <div class="testi-id"><strong>Midhun M S</strong><span>Photography</span></div>
+        </div>
+      </article>
+
       <article class="testi">
         <p class="testi-text">Our experience with Snehand Photography was truly amazing! The whole team was so friendly, kind and welcoming. They never felt like photographers but more like our own family. We were so comfortable with them and they made every moment even more special.</p>
         <div class="testi-foot">
@@ -265,26 +444,10 @@ When I'm not working, I'm usually chasing the monsoon clouds or drinking too muc
       </article>
 
       <article class="testi">
-        <p class="testi-text">Choosing Snehand Photography was one of the best decisions we made for our special moments. Every photograph tells a story and beautifully captures the emotions of the day. The candid pictures were our absolute favourite—they felt natural and genuine. Thank you for turning our precious moments into memories we can cherish forever.</p>
-        <div class="testi-foot">
-          <div class="testi-av" aria-hidden="true">SS</div>
-          <div class="testi-id"><strong>Silga Shy</strong><span>Candid Photography</span></div>
-        </div>
-      </article>
-
-      <article class="testi">
         <p class="testi-text">Had a fantastic experience with Snehand Photography for my model photoshoot. The entire session was very professional, creative, and comfortable. Snehand has a great eye for lighting, angles, and composition. He also gives excellent direction to make you look your best.</p>
         <div class="testi-foot">
           <div class="testi-av" aria-hidden="true">AM</div>
           <div class="testi-id"><strong>Anjal Maheendran</strong><span>Model Photoshoot</span></div>
-        </div>
-      </article>
-
-      <article class="testi">
-        <p class="testi-text">Had a really great experience working with Snehand! He is a very good photographer, not just because of his skills but also because of the way he interacts with people. He's super friendly, easy to work with, and really good at handling clients. His photos are absolutely beautiful, and the final outputs are equally impressive. A genuinely talented person!</p>
-        <div class="testi-foot">
-          <div class="testi-av" aria-hidden="true">MM</div>
-          <div class="testi-id"><strong>Midhun M S</strong><span>Photography</span></div>
         </div>
       </article>
 
@@ -386,12 +549,12 @@ When I'm not working, I'm usually chasing the monsoon clouds or drinking too muc
     <a href="https://www.instagram.com/snehand.photography/">@snehand.photography</a>
   </div>
   <div class="insta-grid">
-    <div class="ph p1"></div>
-    <div class="ph p4"></div>
-    <div class="ph p2"></div>
-    <div class="ph p5"></div>
-    <div class="ph p6"></div>
-    <div class="ph p3"></div>
+    <a href="https://www.instagram.com/snehand.photography/" class="insta-card" style="background-image:url('public/wed1.jpg')" aria-label="View on Instagram"><span class="insta-ov"><svg class="ico"><use href="#i-insta"/></svg></span></a>
+    <a href="https://www.instagram.com/snehand.photography/" class="insta-card" style="background-image:url('public/fash2.jpg')" aria-label="View on Instagram"><span class="insta-ov"><svg class="ico"><use href="#i-insta"/></svg></span></a>
+    <a href="https://www.instagram.com/snehand.photography/" class="insta-card" style="background-image:url('public/baby3.jpg')" aria-label="View on Instagram"><span class="insta-ov"><svg class="ico"><use href="#i-insta"/></svg></span></a>
+    <a href="https://www.instagram.com/snehand.photography/" class="insta-card" style="background-image:url('public/fam4.jpg')" aria-label="View on Instagram"><span class="insta-ov"><svg class="ico"><use href="#i-insta"/></svg></span></a>
+    <a href="https://www.instagram.com/snehand.photography/" class="insta-card" style="background-image:url('public/matern4jpg.jpg')" aria-label="View on Instagram"><span class="insta-ov"><svg class="ico"><use href="#i-insta"/></svg></span></a>
+    <a href="https://www.instagram.com/snehand.photography/" class="insta-card" style="background-image:url('public/ceoImg.jpg')" aria-label="View on Instagram"><span class="insta-ov"><svg class="ico"><use href="#i-insta"/></svg></span></a>
   </div>
 </section>
 
@@ -449,13 +612,13 @@ When I'm not working, I'm usually chasing the monsoon clouds or drinking too muc
         <div class="mango-svc-label">What We Cover</div>
         <ul class="mango-svc">
           <li>Wedding</li>
-          <li>Modelling</li>
-          <li>Portraits</li>
-          <li>Maternity</li>
+          <li>Production</li>
+          <li>Advertisement</li>
+          <li>Events</li>
         </ul>
         <div class="mango-phones">
-          <a href="tel:+918129679738" class="mango-phone"><svg class="ico"><use href="#i-phone"/></svg> +91 8129679738</a>
-          <a href="tel:+917907232095" class="mango-phone"><svg class="ico"><use href="#i-phone"/></svg> +91 7907232095</a>
+          <a href="tel:+918129679738" class="mango-phone"><svg class="ico"><use href="#i-phone"/></svg> +91 79072032095 </a>
+          <a href="tel:+917907232095" class="mango-phone"><svg class="ico"><use href="#i-phone"/></svg> +91 8281799733</a>
         </div>
         <div class="mango-info-foot">
           <a href="https://mangotales.in" target="_blank" rel="noopener" class="mango-site">mangotales.in</a>
@@ -472,7 +635,7 @@ When I'm not working, I'm usually chasing the monsoon clouds or drinking too muc
           <div class="mango-loc-head">
             <span class="mango-loc-pin"><svg class="ico"><use href="#i-pin"/></svg></span>
             <div>
-              <h4>Our Studio Location</h4>
+              <h4>Our Location</h4>
               <p>Kodiyeri, Kannur, Kerala 670671</p>
             </div>
           </div>
@@ -536,9 +699,9 @@ When I'm not working, I'm usually chasing the monsoon clouds or drinking too muc
           <a href="https://share.google/nWxDXA4kd5ZE0Nggj" target="_blank" aria-label="Google Business Profile"><svg class="ico"><use href="#i-google"/></svg></a>
         </div>
         <ul>
-          <li><a href="mailto:hello@snehandphotography.com">hello@snehandphotography.com</a></li>
-          <li><a href="tel:+917907232095">+91 79072 32095</a></li>
-          <li><a href="https://wa.me/7907232095" target="_blank">WhatsApp: +91 79072 32095</a></li>
+          <li><a href="mailto:snehandphotography@gmail.com" style="font-size: 12px;">snehandphotography@gmail.com</a></li>
+          <li><a href="tel:+917907232095"style="font-size: 13px;" >+91 79072 32095</a></li>
+          <li><a href="https://wa.me/7907232095" target="_blank" style="font-size: 12px;">WhatsApp: +91 79072 32095</a></li>
           <li>kannur, Kerala 670671</li>
         </ul>
       </div>
