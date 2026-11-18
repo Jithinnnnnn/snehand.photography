@@ -676,12 +676,21 @@ footer li a:hover { color: var(--ink); }
 /* Info card */
 .mango-info-top { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
 .mango-badge {
-  width: 52px; height: 52px; border-radius: 50%;
-  background: #ffc324; color: #1c1407;
-  display: grid; place-items: center;
-  font: 800 18px var(--serif);
-  box-shadow: 0 6px 18px rgba(255,195,36,.25);
+  width: 52px; 
+  height: 52px; 
+  border-radius: 50%;
+  background: #ffc324; 
+  display: grid; 
+  place-items: center;
+  box-shadow: 0 6px 18px rgba(255, 195, 36, .25);
   flex-shrink: 0;
+  overflow: hidden; /* Keeps the image clipped to the circle */
+}
+
+.mango-badge img {
+  width: 32px;  /* Set a fixed width or percentage smaller than the badge */
+  height: 32px; /* Set matching height to keep it proportional */
+  object-fit: contain;
 }
 .mango-id h3 { font: 700 22px/1.15 var(--serif); color: #fff; }
 .mango-role { font: 500 12px var(--sans); letter-spacing: .14em; text-transform: uppercase; color: #ffc324; }
