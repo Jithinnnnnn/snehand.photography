@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 620" fill="none">
+  <g stroke="#D4A72C" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" opacity="0.65">
+    
+    
+    <polyline points="110,235 110,120 265,120" />
+    <line x1="110" y1="120" x2="235" y2="245" />
+    <polyline points="355,165 445,85 445,230" />
+    <line x1="110" y1="275" x2="110" y2="555" />
+
+    
+    <g transform="translate(82, 185)">
+      
+      <rect x="0" y="12" width="84" height="56" rx="8" fill="#F9F8F4" />
+      
+      <path d="M22,12 L28,2 L56,2 L62,12" />
+      
+      <circle cx="42" cy="40" r="18" />
+      <circle cx="42" cy="40" r="11" />
+      
+      <circle cx="71" cy="23" r="2.2" />
+    </g>
+
+    
+    <g transform="translate(395, 165)">
+      
+      <polyline points="0,16 0,0 16,0" />
+      <polyline points="74,0 90,0 90,16" />
+      <polyline points="90,54 90,70 74,70" />
+      <polyline points="16,70 0,70 0,54" />
+      
+      <circle cx="45" cy="35" r="21" />
+      <circle cx="45" cy="35" r="13" />
+    </g>
+
+    
+    <path d="M 60,335 A 50,50 0 0,0 160,335 Z" />
+
+    
+    <path d="M 110,400 A 52,52 0 0,0 110,504" />
+    <path d="M 110,412 A 40,40 0 0,0 110,492" />
+    <path d="M 110,424 A 28,28 0 0,0 110,480" />
+    <path d="M 110,436 A 16,16 0 0,0 110,468" />
+
+    
+    <circle cx="455" cy="360" r="68" stroke-dasharray="235 200" transform="rotate(-75 455 360)" />
+    <circle cx="455" cy="360" r="54" stroke-dasharray="195 160" transform="rotate(-75 455 360)" />
+    <circle cx="455" cy="360" r="40" stroke-dasharray="150 130" transform="rotate(-75 455 360)" />
+    <circle cx="455" cy="360" r="26" stroke-dasharray="105 100" transform="rotate(-75 455 360)" />
+
+  </g>
+</svg>

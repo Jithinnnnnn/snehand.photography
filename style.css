@@ -37,7 +37,7 @@ img, svg { display: block; max-width: 100%; }
 /* ---- Placeholder photo blocks (swap with real images) ---- */
 .ph { background-size: cover; background-position: center; }
 .p1 { background: linear-gradient(145deg, #3a3330 0%, #6b5b4e 50%, #9c8068 100%); }
-.p2 { background: linear-gradient(145deg, #c4a35a 0%, #e8c97a 50%, #f5e09a 100%); }
+.p2 { background: url('public/gemini-svg.svg') center / cover no-repeat; }
 .p3 { background: linear-gradient(145deg, #4a5a6b 0%, #7a9ab0 55%, #aac5d8 100%); }
 .p4 { background: linear-gradient(145deg, #6b4a35 0%, #9c7055 55%, #c49070 100%); }
 .p5 { background: linear-gradient(145deg, #3d4a3a 0%, #5a7055 55%, #8aa080 100%); }
