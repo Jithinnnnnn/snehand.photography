@@ -102,16 +102,59 @@ img, svg { display: block; max-width: 100%; }
   position: relative; min-height: 680px;
   display: flex; align-items: center;
   overflow: hidden;
-  background: linear-gradient(100deg, rgba(10,10,10,.72) 0%, rgba(10,10,10,.18) 60%),
-              linear-gradient(180deg, #c8b89a 0%, #8a7258 40%, #3c3022 100%);
+  /* background kept as silent fallback while images load */
+  background: #111;
 }
-/* Decorative mountain-silhouette feel */
-.hero::after {
-  content: "";
-  position: absolute; inset: 0; pointer-events: none;
+/* Remove old decorative gradient — slides replace it */
+.hero::after { display: none; }
+
+/* ---- Slideshow layer ---- */
+.hero-slides {
+  position: absolute; inset: 0; z-index: 0;
+}
+
+.hero-slide {
+  position: absolute; inset: 0;
+  opacity: 0;
+  /* crossfade */
+  transition: opacity 1.4s ease-in-out;
+  /* Ken Burns runs continuously on the img; JS just swaps opacity */
+}
+
+.hero-slide.is-active {
+  opacity: 1;
+}
+
+/* Ken Burns: subtle scale 1 → 1.06 over 7 s.
+   All slides run the same timeline, so during a crossfade the outgoing
+   and incoming images are at the same scale and the zoom flows seamlessly. */
+.hero-slide picture,
+.hero-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--fp, center 25%);
+  animation: ken-burns 7s ease-in-out infinite alternate;
+}
+
+@keyframes ken-burns {
+  from { transform: scale(1);    }
+  to   { transform: scale(1.06); }
+}
+
+/* Dark overlay keeps text readable over any photo */
+.hero-overlay {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background:
-    radial-gradient(ellipse 60% 90% at 78% 60%, rgba(100,140,160,.18), transparent),
-    radial-gradient(ellipse 30% 50% at 50% 100%, rgba(0,0,0,.35), transparent);
+    linear-gradient(100deg, rgba(10,10,10,.70) 0%, rgba(10,10,10,.22) 60%),
+    linear-gradient(180deg, rgba(0,0,0,.18) 0%, rgba(0,0,0,.42) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide picture,
+  .hero-slide img { animation: none; }
+  .hero-slide { transition: none; }
 }
 
 .hero .wrap { position: relative; z-index: 2; width: 100%; padding-top: 40px; padding-bottom: 80px; }

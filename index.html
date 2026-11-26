@@ -125,6 +125,35 @@
 
 <!-- ========== HERO ========== -->
 <section class="hero" style="padding:0">
+
+  <!-- Slideshow backdrop -->
+  <div class="hero-slides" aria-hidden="true">
+    <!-- Slide 1 — added1.jpg  focal: center 30% (face visible in portrait) -->
+    <div class="hero-slide" style="--fp:center 30%">
+      <picture>
+        <source media="(max-width:768px)" srcset="public/wed1.jpg">
+        <img src="public/Sholina Bridal Portrait with Jasmine Braids.png" alt="" draggable="false">
+      </picture>
+    </div>
+    <!-- Slide 2 — added2.jpg  focal: center 25% -->
+    <div class="hero-slide" style="--fp:center 25%">
+      <picture>
+        <source media="(max-width:768px)" srcset="public/added6.jpg">
+        <img src="public/coupleherolandscape.png" alt="" draggable="false">
+      </picture>
+    </div>
+    <!-- Slide 3 — added3.jpg  focal: center 20% -->
+    <div class="hero-slide" style="--fp:center 20%">
+      <picture>
+        <source media="(max-width:768px)" srcset="public/baby3.jpg">
+        <img src="public/babylandscape.webp" alt="" draggable="false">
+      </picture>
+    </div>
+  </div>
+
+  <!-- Dark overlay so text stays legible -->
+  <div class="hero-overlay" aria-hidden="true"></div>
+
   <div class="wrap">
     <div class="hero-copy">
       <small>HEY, I'M SNEHAND</small>
@@ -142,6 +171,45 @@
     <div class="sig" aria-hidden="true">Snehand</div>
   </div>
 </section>
+
+<script>
+/* ── Hero Ken Burns slideshow ── */
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.hero-slide'));
+  if (slides.length < 2) return;
+  var current = 0;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* activate first slide immediately */
+  slides[0].classList.add('is-active');
+
+  if (reduce) return; /* respect user motion preference */
+
+  function advance() {
+    var prev = current;
+    current = (current + 1) % slides.length;
+    slides[prev].classList.remove('is-active');
+    slides[prev].classList.add('is-leaving');
+    slides[current].classList.add('is-active');
+
+    /* clean up leaving class after transition finishes */
+    var leaving = slides[prev];
+    leaving.addEventListener('transitionend', function cleanup(e) {
+      if (e.propertyName === 'opacity') {
+        leaving.classList.remove('is-leaving');
+        leaving.removeEventListener('transitionend', cleanup);
+      }
+    });
+  }
+
+  /* pause when tab is hidden to avoid drift */
+  var timer = setInterval(advance, 7000);
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { clearInterval(timer); }
+    else { timer = setInterval(advance, 7000); }
+  });
+})();
+</script>
 
 <!-- ========== PORTFOLIO CATEGORIES ========== -->
 <section id="work" class="cats-section">
