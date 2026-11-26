@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="public/mangotales-logo.svg">
+<link rel="preload" as="image" href="public/hero-bridal.webp" type="image/webp">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -128,18 +129,20 @@
 
   <!-- Slideshow backdrop -->
   <div class="hero-slides" aria-hidden="true">
-    <!-- Slide 1 — added1.jpg  focal: center 30% (face visible in portrait) -->
+    <!-- Slide 1 — bridal portrait  focal: center 30% -->
     <div class="hero-slide" style="--fp:center 30%">
       <picture>
         <source media="(max-width:768px)" srcset="public/wed1.jpg">
-        <img src="public/Sholina Bridal Portrait with Jasmine Braids.png" alt="" draggable="false">
+        <source type="image/webp" srcset="public/hero-bridal.webp">
+        <img src="public/Sholina Bridal Portrait with Jasmine Braids.png" alt="" draggable="false" fetchpriority="high">
       </picture>
     </div>
-    <!-- Slide 2 — added2.jpg  focal: center 25% -->
+    <!-- Slide 2 — couple landscape  focal: center 25% -->
     <div class="hero-slide" style="--fp:center 25%">
       <picture>
         <source media="(max-width:768px)" srcset="public/added6.jpg">
-        <img src="public/coupleherolandscape.png" alt="" draggable="false">
+        <source type="image/webp" srcset="public/hero-couple.webp">
+        <img src="public/coupleherolandscape.png" alt="" draggable="false" loading="lazy">
       </picture>
     </div>
     <!-- Slide 3 — added3.jpg  focal: center 20% -->
